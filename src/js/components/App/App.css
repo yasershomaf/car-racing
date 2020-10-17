@@ -5,12 +5,19 @@ body {
 .game-container {
   width: 100%;
   height: 100vh;
+  position: relative;
 }
 
-.game-container .road {
+.road {
   width: 500px;
   height: 100%;
   margin: 0 auto;
   background-color: gray;
   position: relative;
+}
+
+.btn-stat {
+  position: absolute;
+  bottom: 30px;
+  right: 50px;
 }
