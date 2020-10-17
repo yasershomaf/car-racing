@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect, useCallback} from 'react';
 import Car from '../Car/Car';
 import './App.css';
 
@@ -10,6 +10,23 @@ const App = () => {
 	const [carPosition, setCarPosition] = useState(235);
 
 	const addCarIntervalRef = useRef(null);
+	const moveCarsIntervalRef = useRef(null);
+
+	const moveCarHandler = useRef((e) => {
+		if(e.keyCode === 37) {
+			setCarPosition(carPosition => Math.max(0, carPosition - 10));
+		}
+		else if(e.keyCode === 39) {
+			setCarPosition(carPosition => Math.min(470, carPosition + 10));
+		}
+	});
+
+	useEffect(() => {
+		document.addEventListener('keydown', moveCarHandler.current);
+		return () => {
+			document.removeEventListener('keydown', moveCarHandler.current);
+		}
+	}, []);
 
 	const startHandler = () => {
 		setCars([]);
@@ -29,10 +46,12 @@ const App = () => {
 			}]);
 		}, showNewCarEvery);
 
-		setInterval(() => {
+		moveCarsIntervalRef.current = setInterval(() => {
 			setCars((cars) => cars.map(car => ({...car, top: car.top + crasSpeed})));
 		}, 50);
 	};
+
+	
 
 	return <div className="game-container">
 		<div className="road">
