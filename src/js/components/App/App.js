@@ -13,11 +13,22 @@ const App = () => {
 	const moveCarsIntervalRef = useRef(null);
 
 	const moveCarHandler = useRef((e) => {
-		if(e.keyCode === 37) {
-			setCarPosition(carPosition => Math.max(0, carPosition - 10));
-		}
-		else if(e.keyCode === 39) {
-			setCarPosition(carPosition => Math.min(470, carPosition + 10));
+		if (canMove.current) {
+			let newPosition;
+			if(e.keyCode === 37) {
+				setCarPosition(carPosition => {
+					newPosition = Math.max(0, carPosition - 10);
+					carPositionRef.current = newPosition;
+					return newPosition;
+				});
+			}
+			else if(e.keyCode === 39) {
+				setCarPosition(carPosition => {
+					newPosition = Math.min(470, carPosition + 10);
+					carPositionRef.current = newPosition;
+					return newPosition;
+				});
+			}
 		}
 	});
 
@@ -28,9 +39,13 @@ const App = () => {
 		}
 	}, []);
 
+	const canMove = useRef(false);
+	const carPositionRef = useRef([]);
+
 	const startHandler = () => {
 		setCars([]);
 		setCarPosition(235);
+		canMove.current = true;
 
 		addCarIntervalRef.current = setInterval(() => {
 			setCars((cars) => [...cars, {
@@ -47,11 +62,27 @@ const App = () => {
 		}, showNewCarEvery);
 
 		moveCarsIntervalRef.current = setInterval(() => {
-			setCars((cars) => cars.map(car => ({...car, top: car.top + crasSpeed})));
+			setCars((cars) => {
+				const newCars = cars.map(car => {
+					const newTop = car.top + crasSpeed;
+
+					if (
+						newTop > window.innerHeight - 170 && newTop < window.innerHeight - 50 &&
+						car.left > carPositionRef.current - 30 && car.left < carPositionRef.current + 30
+					) {
+						clearInterval(addCarIntervalRef.current);
+						clearInterval(moveCarsIntervalRef.current);
+						canMove.current = false;
+						console.log('you loose');
+					}
+
+					return {...car, top: car.top + crasSpeed}
+				});
+
+				return newCars;
+			});
 		}, 50);
 	};
-
-	
 
 	return <div className="game-container">
 		<div className="road">
