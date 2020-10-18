@@ -1,5 +1,105 @@
 .car {
-  width: 30px;
-  height: 60px;
   position: absolute;
+	width: 50px;
+}
+
+.car-body {
+	border-radius: 12px 12px 0 0;
+	height: 98px;
+}
+
+.car-back {
+  border-color: transparent;
+	border-radius: 0 0 18px 18px;
+  border-style: solid;
+  border-width: 32px 4px 0;
+	box-sizing: border-box;
+}
+
+.front-glass {
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 24px solid black;
+	box-sizing: border-box;
+	left: 3px;
+	position: absolute;
+	top: 30px;
+	width: 44px;
+}
+
+.top-glass {
+	background-color: black;
+	height: 24px;
+	left: 7px;
+	position: absolute;
+	top: 58px;
+	width: 36px;
+}
+
+.back-glass {
+	border-bottom: 20px solid black;
+	border-left: 2px solid transparent;
+	border-right: 2px solid transparent;
+	box-sizing: border-box;
+	left: 5px;
+	position: absolute;
+	top: 98px;
+	width: 40px;
+}
+
+.left-front-glass, .right-front-glass {
+	border-bottom: 12px solid black;
+	border-top: 12px solid transparent;
+	box-sizing: border-box;
+	position: absolute;
+	top: 32px;
+	width: 4px;
+}
+
+.left-front-glass {
+	border-left: 2px solid black;
+	border-right: 2px solid transparent;
+	left: 1px;
+}
+
+.right-front-glass {
+	border-left: 2px solid transparent;
+	border-right: 2px solid black;
+	right: 1px;
+}
+
+.left-glass, .right-glass {
+	background-color: black;
+	height: 26px;
+	position: absolute;
+	top: 56px;
+	width: 4px;
+}
+
+.left-glass {
+	left: 1px;
+}
+
+.right-glass {
+	right: 1px;
+}
+
+.left-back-glass, .right-back-glass {
+	border-top: 21px solid black;
+	box-sizing: border-box;
+	position: absolute;
+	top: 82px;
+	width: 4px;
+}
+
+.left-back-glass {
+	border-left: 2px solid transparent;
+	border-right: 2px solid transparent;
+	left: 1px;
+}
+
+.right-back-glass {
+	border-left: 2px solid transparent;
+	border-right: 2px solid transparent;
+	right: 1px;
 }

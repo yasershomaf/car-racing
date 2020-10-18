@@ -7,7 +7,7 @@ const App = () => {
 	const [crasSpeed, setCrasSpeed] = useState(10);
 	const [showNewCarEvery, setShowNewCarEvery] = useState(1000);
 	const [cars, setCars] = useState([]);
-	const [carPosition, setCarPosition] = useState(235);
+	const [carPosition, setCarPosition] = useState(175);
 
 	const addCarIntervalRef = useRef(null);
 	const moveCarsIntervalRef = useRef(null);
@@ -24,7 +24,7 @@ const App = () => {
 			}
 			else if(e.keyCode === 39) {
 				setCarPosition(carPosition => {
-					newPosition = Math.min(470, carPosition + 10);
+					newPosition = Math.min(350, carPosition + 10);
 					carPositionRef.current = newPosition;
 					return newPosition;
 				});
@@ -44,7 +44,7 @@ const App = () => {
 
 	const startHandler = () => {
 		setCars([]);
-		setCarPosition(235);
+		setCarPosition(175);
 		canMove.current = true;
 
 		addCarIntervalRef.current = setInterval(() => {
@@ -56,8 +56,8 @@ const App = () => {
 				}, ${
 					Math.floor(Math.random() * 256)
 				})`,
-				left: Math.floor(Math.random() * 470),
-				top: -60
+				left: Math.floor(Math.random() * 351),
+				top: -130
 			}]);
 		}, showNewCarEvery);
 
@@ -67,8 +67,8 @@ const App = () => {
 					const newTop = car.top + crasSpeed;
 
 					if (
-						newTop > window.innerHeight - 170 && newTop < window.innerHeight - 50 &&
-						car.left > carPositionRef.current - 30 && car.left < carPositionRef.current + 30
+						newTop > window.innerHeight - 310 && newTop < window.innerHeight - 50 &&
+						car.left > carPositionRef.current - 50 && car.left < carPositionRef.current + 50
 					) {
 						clearInterval(addCarIntervalRef.current);
 						clearInterval(moveCarsIntervalRef.current);
@@ -88,7 +88,7 @@ const App = () => {
 		<div className="road">
 			{cars.map((car, index) => <Car key={index} color={car.color} top={car.top} left={car.left} />)}
 
-			<Car color="red" top={window.innerHeight - 110} left={carPosition} />
+			<Car color="red" top={window.innerHeight - 180} left={carPosition} />
 		</div>
 
 		<button className="btn-stat" onClick={startHandler}>Start</button>
