@@ -7,7 +7,6 @@ const App = () => {
 	const [crasSpeed, setCrasSpeed] = useState(15);
 	const [showNewCarEvery, setShowNewCarEvery] = useState(1000);
 	const [cars, setCars] = useState([]);
-	const [carPosition, setCarPosition] = useState(175);
 
 	const addCarIntervalRef = useRef(null);
 	const moveCarsIntervalRef = useRef(null);
@@ -41,11 +40,13 @@ const App = () => {
 		}
 	}, []);
 
-	const carPositionRef = useRef([]);
+	const linesTopRef = useRef(- window.innerHeight / 4);
+	const carPositionRef = useRef(175);
 
 	const startHandler = () => {
 		setCars([]);
-		setCarPosition(175);
+		carPositionRef.current = 175;
+		linesTopRef.current = - window.innerHeight / 4;
 
 		addCarIntervalRef.current = setInterval(() => {
 			setCars((cars) => [...cars, {
@@ -63,17 +64,15 @@ const App = () => {
 		}, showNewCarEvery);
 
 		moveCarsIntervalRef.current = setInterval(() => {
+			linesTopRef.current = (
+				linesTopRef.current + 1.5 * crasSpeed + window.innerHeight / 4
+			) % (window.innerHeight / 4) - window.innerHeight / 4;
+
 			if(moveToLeft.current) {
-				setCarPosition(carPosition => {
-					carPositionRef.current = Math.max(0, carPosition - 10);
-					return carPositionRef.current;
-				});
+				carPositionRef.current = Math.max(0, carPositionRef.current - 10);
 			}
 			else if(moveToRight.current) {
-				setCarPosition(carPosition => {
-					carPositionRef.current = Math.min(350, carPosition + 10);
-					return carPositionRef.current;
-				});
+				carPositionRef.current = Math.min(350, carPositionRef.current + 10);
 			}
 
 			setCars((cars) => {
@@ -99,9 +98,13 @@ const App = () => {
 
 	return <div className="game-container">
 		<div className="road">
+			<div className="lines" style={{marginTop: linesTopRef.current + 'px'}}>
+				<div /><div /><div /><div /><div />
+			</div>
+
 			{cars.map(car => <Car key={car.id} color={car.color} top={car.top} left={car.left} />)}
 
-			<Car color="red" top={window.innerHeight - 180} left={carPosition} />
+			<Car color="red" top={window.innerHeight - 180} left={carPositionRef.current} />
 		</div>
 
 		<button className="btn-stat" onClick={startHandler}>Start</button>
