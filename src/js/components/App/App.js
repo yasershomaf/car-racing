@@ -1,5 +1,9 @@
 import React, {useState, useRef, useEffect, useCallback} from 'react';
+
 import Car from '../Car/Car';
+import Milestones from '../Milestones/Milestones';
+import Crash from '../Crash/Crash';
+
 import './App.css';
 
 const App = () => {
@@ -12,6 +16,10 @@ const App = () => {
 	const moveCarsIntervalRef = useRef(null);
 	const moveToLeft = useRef(false);
 	const moveToRight = useRef(false);
+
+	const roadWidth = 400;
+	const carWidth = 50;
+	const carHeight = 130;
 
 	const keyDownHandler = useRef((e) => {
 		if(e.keyCode === 37) {
@@ -40,49 +48,89 @@ const App = () => {
 		}
 	}, []);
 
-	const linesTopRef = useRef(- window.innerHeight / 4);
-	const carPositionRef = useRef(175);
+	const carPositionRef = useRef(Math.floor((roadWidth - carWidth) / 2));
+	const milestonesTopRef = useRef(- window.innerHeight / 4);
+	const crashPositionRef = useRef(null);
 
 	const startHandler = () => {
 		setCars([]);
-		carPositionRef.current = 175;
-		linesTopRef.current = - window.innerHeight / 4;
+		crashPositionRef.current = null;
+		carPositionRef.current = Math.floor((roadWidth - carWidth) / 2);
+		milestonesTopRef.current = - window.innerHeight / 4;
 
 		addCarIntervalRef.current = setInterval(() => {
-			setCars((cars) => [...cars, {
-				id: new Date().getTime(),
-				color: `rgb(${
-					Math.floor(Math.random() * 256)
-				}, ${
-					Math.floor(Math.random() * 256)
-				}, ${
-					Math.floor(Math.random() * 256)
-				})`,
-				left: Math.floor(Math.random() * 351),
-				top: -130
-			}]);
+			setCars((cars) => {
+				let canAddCar = true;
+				let left = Math.floor(Math.random() * (1 + roadWidth - carWidth));
+				if (cars.length > 0 && cars.some(
+					car => car.top < 0 && left > car.left - carWidth && left < car.left + carWidth
+				)) {
+					canAddCar = false;
+					let newLeft = (left + 1) % (1 + roadWidth - carWidth);
+					while (newLeft !== left) {
+						if (cars.every(
+							car => car.top >= 0 || newLeft <= car.left - carWidth || newLeft >= car.left + carWidth
+						)) {
+							left = newLeft;
+							canAddCar = true;
+							break;
+						}
+						newLeft = (newLeft + 1) % (1 + roadWidth - carWidth);
+					}
+				}
+				return !canAddCar ? cars : [...cars, {
+					id: new Date().getTime(),
+					color: `rgb(${
+						Math.floor(Math.random() * 256)
+					}, ${
+						Math.floor(Math.random() * 256)
+					}, ${
+						Math.floor(Math.random() * 256)
+					})`,
+					left: left,
+					top: -carHeight
+				}];
+			});
 		}, showNewCarEvery);
 
 		moveCarsIntervalRef.current = setInterval(() => {
-			linesTopRef.current = (
-				linesTopRef.current + 1.5 * crasSpeed + window.innerHeight / 4
+			milestonesTopRef.current = (
+				milestonesTopRef.current + 2 * crasSpeed + window.innerHeight / 4
 			) % (window.innerHeight / 4) - window.innerHeight / 4;
 
 			if(moveToLeft.current) {
 				carPositionRef.current = Math.max(0, carPositionRef.current - 10);
 			}
 			else if(moveToRight.current) {
-				carPositionRef.current = Math.min(350, carPositionRef.current + 10);
+				carPositionRef.current = Math.min(roadWidth - carWidth, carPositionRef.current + 10);
 			}
 
 			setCars((cars) => {
+				let isCrashed = false;
 				const newCars = cars.map(car => {
 					const newTop = car.top + crasSpeed;
 
 					if (
-						newTop > window.innerHeight - 310 && newTop < window.innerHeight - 50 &&
-						car.left > carPositionRef.current - 50 && car.left < carPositionRef.current + 50
+						!isCrashed &&
+						newTop > window.innerHeight - 50 - 2 * carHeight && newTop < window.innerHeight - 50 &&
+						car.left > carPositionRef.current - carWidth && car.left < carPositionRef.current + carWidth
 					) {
+						isCrashed = true;
+						crashPositionRef.current = {
+							left: Math.abs((
+								Math.min(car.left, carPositionRef.current) +
+								Math.max(car.left, carPositionRef.current) + carWidth
+							) / 2),
+							top: Math.abs((
+								Math.min(car.top, window.innerHeight - 50 - carHeight) +
+								Math.max(car.top + carHeight, window.innerHeight - 50)
+							) / 2)
+						}
+
+
+
+
+
 						clearInterval(addCarIntervalRef.current);
 						clearInterval(moveCarsIntervalRef.current);
 						console.log('you loose');
@@ -98,13 +146,26 @@ const App = () => {
 
 	return <div className="game-container">
 		<div className="road">
-			<div className="lines" style={{marginTop: linesTopRef.current + 'px'}}>
-				<div /><div /><div /><div /><div />
-			</div>
+			<Milestones top={milestonesTopRef.current} />
 
-			{cars.map(car => <Car key={car.id} color={car.color} top={car.top} left={car.left} />)}
+			{cars.map(car => <Car
+				key={car.id}
+				color={car.color}
+				top={car.top}
+				left={car.left}
+				width={carWidth}
+				height={carHeight}
+			/>)}
 
-			<Car color="red" top={window.innerHeight - 180} left={carPositionRef.current} />
+			<Car
+				color="red"
+				top={window.innerHeight - 50 - carHeight}
+				left={carPositionRef.current}
+				width={carWidth}
+				height={carHeight}
+			/>
+
+			{crashPositionRef.current && <Crash {...crashPositionRef.current} />}
 		</div>
 
 		<button className="btn-stat" onClick={startHandler}>Start</button>

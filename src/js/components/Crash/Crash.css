@@ -1,0 +1,16 @@
+.crash {
+	position: absolute;
+}
+
+.crash > div > div {
+	position: absolute;
+}
+
+.crash > div > div:first-child > div:first-child {
+	border-color: transparent transparent black;
+	border-style: solid;
+}
+.crash > div > div:last-child > div:first-child {
+	border-color: transparent transparent yellow;
+	border-style: solid;
+}
