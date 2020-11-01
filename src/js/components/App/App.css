@@ -4,17 +4,17 @@ body {
 
 .game-container {
 	height: 100vh;
+	overflow: hidden;
 	position: relative;
-	width: 100%;
 }
 
 .road {
-	background-color: gray;
 	height: 100%;
+	left: 50%;
 	margin: 0 auto;
-	overflow: hidden;
-	position: relative;
-	width: 400px;
+	position: absolute;
+	top: 0px;
+	transform: translateX(-50%)
 }
 
 .btn-stat {

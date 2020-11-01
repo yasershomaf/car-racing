@@ -1,11 +1,46 @@
-.lines {
-	margin-left: auto;
-	margin-right: auto;
-	width: 20px;
+.milestones {
+	display: flex;
+	height: 200%;
+	justify-content: center;
+	width: 100%;
 }
 
-.lines div {
+.milestones .left-trees, .milestones .right-trees {
+	width: 150px;
+}
+.milestones .left-trees > div:first-child {
+	margin: 0 0 calc(100vh - 150px);
+}
+.milestones .right-trees > div:first-child {
+	margin: 50vh 0 calc(100vh - 150px);
+}
+
+.milestones .left-lines, .milestones .right-lines, .road-area .middle-lines {
+	display: flex;
+	flex-direction: column;
+	width: 20px;
+}
+.milestones .left-lines div, .milestones .right-lines div {
+	border: 2px solid black;
+	flex: 1 1 0px;
+}
+.milestones .left-lines div:nth-child(2n) {
+	background-color: black;
+}
+.milestones .right-lines div:nth-child(2n + 1) {
+	background-color: black;
+}
+
+.road-area {
+	background-color: gray;
+}
+.road-area .middle-lines {
+	height: 100%;
+	margin: 0 auto;
+}
+.road-area .middle-lines div {
+	flex: 1 1 0px;
+}
+.road-area .middle-lines div:nth-child(2n) {
 	background-color: white;
-	height: 13vh;
-	margin-bottom: 12vh;
 }

@@ -49,14 +49,14 @@ const App = () => {
 	}, []);
 
 	const carPositionRef = useRef(Math.floor((roadWidth - carWidth) / 2));
-	const milestonesTopRef = useRef(- window.innerHeight / 4);
+	const milestonesTopRef = useRef(- window.innerHeight);
 	const crashPositionRef = useRef(null);
 
 	const startHandler = () => {
 		setCars([]);
 		crashPositionRef.current = null;
 		carPositionRef.current = Math.floor((roadWidth - carWidth) / 2);
-		milestonesTopRef.current = - window.innerHeight / 4;
+		milestonesTopRef.current = - window.innerHeight;
 
 		addCarIntervalRef.current = setInterval(() => {
 			setCars((cars) => {
@@ -95,8 +95,8 @@ const App = () => {
 
 		moveCarsIntervalRef.current = setInterval(() => {
 			milestonesTopRef.current = (
-				milestonesTopRef.current + 2 * crasSpeed + window.innerHeight / 4
-			) % (window.innerHeight / 4) - window.innerHeight / 4;
+				milestonesTopRef.current + 2 * crasSpeed + window.innerHeight
+			) % window.innerHeight - window.innerHeight;
 
 			if(moveToLeft.current) {
 				carPositionRef.current = Math.max(0, carPositionRef.current - 10);
@@ -107,7 +107,7 @@ const App = () => {
 
 			setCars((cars) => {
 				let isCrashed = false;
-				const newCars = cars.map(car => {
+				return cars.map(car => {
 					const newTop = car.top + crasSpeed;
 
 					if (
@@ -126,28 +126,20 @@ const App = () => {
 								Math.max(car.top + carHeight, window.innerHeight - 50)
 							) / 2)
 						}
-
-
-
-
-
 						clearInterval(addCarIntervalRef.current);
 						clearInterval(moveCarsIntervalRef.current);
-						console.log('you loose');
 					}
 
 					return {...car, top: car.top + crasSpeed}
 				}).filter(car => car.top < window.innerHeight);
-
-				return newCars;
 			});
 		}, 50);
 	};
 
 	return <div className="game-container">
-		<div className="road">
-			<Milestones top={milestonesTopRef.current} />
+		<Milestones top={milestonesTopRef.current} roadWidth={roadWidth} />
 
+		<div className="road" style={{width: roadWidth + 'px'}}>
 			{cars.map(car => <Car
 				key={car.id}
 				color={car.color}
